@@ -86,39 +86,39 @@ As a lawyer, I want the files to have statuses I can change after review, say â€
 
 #### Core Deal Room Functionality
 
-Deal room creation and management
-Multi-party access control
+- Deal room creation and management
+- Multi-party access control
 
 #### Document Management for Deals
 
-Secure document upload/download
-Bulk operations
+- Secure document upload/download
+- Bulk operations
 
 #### Permissions
 
-Granular permission system
+- Granular permission system
 
 #### Performance & Scalability
 
-Handle multiple concurrent deals
-Large document handling
-Bulk operations efficiency
+- Handle multiple concurrent deals
+- Large document handling
+- Bulk operations efficiency
 
 #### Code Quality & Architecture
 
-Clean, maintainable code
-Proper design patterns
-SOLID principles
-Error handling
+- Clean, maintainable code
+- Proper design patterns
+- SOLID principles
+- Error handling
 
 #### Testing
 
-Comprehensive test coverage
-Deal-specific edge cases
+- Comprehensive test coverage
+- Deal-specific edge cases
 
 #### Bonus Points (Optional)
 
-Vite React UI: Visualize a specific deal room, its permissions and users.
+- Vite React UI: Visualize a specific deal room, its permissions and users.
 
 ### Submission Guidelines
 
