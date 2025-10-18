@@ -5,7 +5,9 @@ Backend Java Spring Take Home Challenge: Deal Room Management System
 ## Overview
 
 Build a RESTful API for a Deal Room Management System used for secure document sharing between borrowers, lenders and guests. The system must support file management operations and granular permissions. This challenge assesses your ability to design and build scalable backend systems with security features.
+
 Expected Time: 6-8 hours  
+
 Deadline: 3 days
 
 ## Business Context
@@ -17,18 +19,18 @@ A Deal Room (Virtual Data Room) is a secure online repository used during financ
 ### Core Functionality
 
 You need to build an advanced Deal Room Management System with:
-Deal Room Context: Organize files within deal rooms for different transactions
-Document Management: Secure upload, versioning, and sharing of confidential deal documents
-Access Control: Granular permissions for different deal participants (buyers, sellers, advisors)
+- Deal Room Context: Organize files within deal rooms for different transactions
+- Document Management: Secure upload, versioning, and sharing of confidential deal documents
+- Access Control: Granular permissions for different deal participants (buyers, sellers, advisors)
 
 ### User Stories
 
-As an admin, I want to create separate deal rooms for specific deals
-As an admin, I want to control which documents each party can access in the deal room
-As an admin, I want only deal room members to have access to a specific deal room
-As an admin, I want to be able to share specific files or folders to specific members of a deal room
-As a borrower, I want to bulk upload financial documents within folders (can be a .zip)
-As a lawyer, I want the files to have statuses I can change after review, say “REVIEWED”
+- As an admin, I want to create separate deal rooms for specific deals
+- As an admin, I want to control which documents each party can access in the deal room
+- As an admin, I want only deal room members to have access to a specific deal room
+- As an admin, I want to be able to share specific files or folders to specific members of a deal room
+- As a borrower, I want to bulk upload financial documents within folders (can be a .zip)
+- As a lawyer, I want the files to have statuses I can change after review, say “REVIEWED”
 
 ### Technical Requirements
 
