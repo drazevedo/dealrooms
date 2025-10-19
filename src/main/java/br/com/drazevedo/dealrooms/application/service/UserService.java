@@ -2,10 +2,11 @@ package br.com.drazevedo.dealrooms.application.service;
 
 import br.com.drazevedo.dealrooms.domain.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     UserDetails loadUserByUsername(String username);
 

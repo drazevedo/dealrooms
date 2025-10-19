@@ -1,10 +1,15 @@
 package br.com.drazevedo.dealrooms.infrastructure.configuration;
 
+import br.com.drazevedo.dealrooms.application.service.UserService;
 import br.com.drazevedo.dealrooms.application.service.UserServiceImpl;
 import br.com.drazevedo.dealrooms.domain.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,15 +28,14 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Define the user service to retrieve and authenticate the user.
-     *
-     * @param userRepository
-     * @return {@link UserDetails}
-     */
     @Bean
-    UserServiceImpl userServiceImpl(UserRepository userRepository) {
-        return new UserServiceImpl(userRepository);
+    public AuthenticationManager authenticationManager(
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+
+        return new ProviderManager(authenticationProvider);
     }
 
     /**
@@ -44,9 +48,13 @@ public class SecurityConfiguration {
     @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                        (authz) -> authz.requestMatchers("/secured").authenticated().anyRequest().permitAll())
-                .httpBasic();
+        http.authorizeHttpRequests((authz) ->
+                        authz.requestMatchers("/login").permitAll()
+                                .requestMatchers("/api/**").authenticated()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs*/**").permitAll()
+                ).httpBasic();
+        http.csrf().disable();
         return http.build();
     }
 
