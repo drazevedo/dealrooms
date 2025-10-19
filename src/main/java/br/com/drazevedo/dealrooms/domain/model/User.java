@@ -4,6 +4,7 @@ package br.com.drazevedo.dealrooms.domain.model;
 import br.com.drazevedo.dealrooms.domain.model.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,8 +23,11 @@ public class User implements UserDetails {
     private String id;
 
     private String name;
+
+    @Indexed(unique=true)
     private String email;
 
+    @Indexed(unique=true)
     private String username;
     private String password;
 
