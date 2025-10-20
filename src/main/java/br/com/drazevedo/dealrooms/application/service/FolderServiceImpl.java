@@ -25,19 +25,19 @@ public class FolderServiceImpl implements FolderService {
 
     @Override
     public List<Folder> findAllRootFolders() {
-        return folderRepository.findAllByParentFolderNull();
+        return folderRepository.findAllByParentFolderIdNull();
     }
 
     @Override
     public List<Folder> findAllRootFoldersByUser(User user) {
-        return folderRepository.findAllByParentFolderNullAndViewersContaining(user.getUsername());
+        return folderRepository.findAllByParentFolderIdNullAndViewersContaining(user.getUsername());
     }
 
     @Override
     public DealRoom createRoom(String roomName) {
         User loggedUser = LoggedUserUtils.getLoggedUser();
 
-        folderRepository.findAnyByParentFolderNullAndName(roomName).ifPresent(dealRoom -> {
+        folderRepository.findAnyByParentFolderIdNullAndName(roomName).ifPresent(dealRoom -> {
             throw new RuntimeException("Room already exists");
         });
 
@@ -51,7 +51,7 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public FolderDto addVieversToRoom(String roomId, List<String> viewersUsernames) {
 
-        Folder room = folderRepository.findByParentFolderNullAndId(roomId).orElseThrow();
+        Folder room = folderRepository.findByParentFolderIdNullAndId(roomId).orElseThrow();
         List<User> newViewers = userRepository.findAllByUsernameIn(viewersUsernames);
         room.getViewers().addAll(newViewers.stream().map(User::getUsername).toList());
         folderRepository.save(room);
@@ -90,7 +90,7 @@ public class FolderServiceImpl implements FolderService {
 
         Folder folder = new Folder();
         folder.setName(folderName);
-        folder.setParentFolder(parent);
+        folder.setParentFolderId(parent.getId());
 
         return folderRepository.save(folder);
     }
@@ -98,7 +98,7 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public FolderDto addVieversToFolder(String folderId, List<String> viewersUsernames) {
         Folder folder = folderRepository.findById(folderId).orElseThrow();
-        Folder parentFolder = folderRepository.findById(folder.getParentFolder().getId()).orElseThrow();
+        Folder parentFolder = folderRepository.findById(folder.getParentFolderId()).orElseThrow();
 
         List<String> invalidUserNames = viewersUsernames.stream()
                 .filter(viewer -> !parentFolder.getViewers().contains(viewer))

@@ -24,7 +24,7 @@ public class FolderDto {
         return FolderDto.builder()
                 .id(room.getId())
                 .name(room.getName())
-                .parentId((room.getParentFolder() != null) ? room.getParentFolder().getId() : null)
+                .parentId(room.getParentFolderId())
                 .foldersIds(room.getFolders().stream().map(Folder::getId).toList())
                 .documentsIds(room.getDocuments().stream().map(Document::getId).toList())
                 .viewers(room.getViewers().stream().toList())

@@ -12,10 +12,10 @@ public interface FolderRepository extends MongoRepository<Folder, String> {
 
     // All operations that have "ByParentFolderNull" mean a DealRoom
 
-    Optional<Folder> findByParentFolderNullAndId(String id);
-    Optional<Folder> findAnyByParentFolderNullAndName(String name);
-    List<Folder> findAllByParentFolderNull();
-    List<Folder> findAllByParentFolderNullAndViewersContaining(String user);
+    Optional<Folder> findByParentFolderIdNullAndId(String id);
+    Optional<Folder> findAnyByParentFolderIdNullAndName(String name);
+    List<Folder> findAllByParentFolderIdNull();
+    List<Folder> findAllByParentFolderIdNullAndViewersContaining(String user);
 
 
 }

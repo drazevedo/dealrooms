@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @org.springframework.data.mongodb.core.mapping.Document
 @Getter
@@ -21,8 +23,8 @@ public class Document {
     private String checksum;
     private DocumentStatus status;
 
-    private Folder parentFolder;
+    private String parentFolderId;
 
-    private List<User> viewers = new LinkedList<>();
+    private Set<String> viewers = new LinkedHashSet<>();
 
 }
