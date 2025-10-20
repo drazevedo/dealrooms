@@ -20,4 +20,6 @@ public interface DocumentService {
     DocumentDto addVieversToDocument(String documentId, List<String> viewersUsernames);
 
     DocumentDto deleteViewersFromDocument(String documentId, List<String> viewersUsernames);
+
+    DocumentDto reviewDocument(String documentId);
 }

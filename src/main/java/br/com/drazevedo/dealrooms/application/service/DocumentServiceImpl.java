@@ -1,7 +1,6 @@
 package br.com.drazevedo.dealrooms.application.service;
 
 import br.com.drazevedo.dealrooms.application.dto.DocumentDto;
-import br.com.drazevedo.dealrooms.application.dto.FolderDto;
 import br.com.drazevedo.dealrooms.domain.model.Document;
 import br.com.drazevedo.dealrooms.domain.model.Folder;
 import br.com.drazevedo.dealrooms.domain.model.User;
@@ -198,6 +197,19 @@ public class DocumentServiceImpl implements DocumentService {
         Document document = documentRepository.findById(documentId).orElseThrow();
         List<User> newViewers = userRepository.findAllByUsernameIn(viewersUsernames);
         newViewers.stream().map(User::getUsername).forEach(document.getViewers()::remove);
+        documentRepository.save(document);
+
+        return DocumentDto.from(document);
+    }
+
+    @Override
+    public DocumentDto reviewDocument(String documentId) {
+        User loggedUser = LoggedUserUtils.getLoggedUser();
+        Document document = documentRepository.findById(documentId).orElseThrow();
+        
+        document.getViewers().stream().filter(username -> username.equals(loggedUser.getUsername())).findFirst().orElseThrow();
+
+        document.setStatus(DocumentStatus.CHECKED);
         documentRepository.save(document);
 
         return DocumentDto.from(document);

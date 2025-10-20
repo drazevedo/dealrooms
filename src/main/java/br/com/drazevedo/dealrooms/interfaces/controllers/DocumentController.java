@@ -64,4 +64,10 @@ public class DocumentController {
         return service.deleteViewersFromDocument(documentId, viewersUsernames);
     }
 
+    @PostMapping("/api/v1/dealrooms/document/{documentId}/review")
+    @RolesAllowed("LAWYER")
+    public DocumentDto reviewDocument(@PathVariable String documentId) {
+
+        return service.reviewDocument(documentId);
+    }
 }
