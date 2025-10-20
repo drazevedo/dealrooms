@@ -1,6 +1,7 @@
 package br.com.drazevedo.dealrooms.application.service;
 
 import br.com.drazevedo.dealrooms.application.dto.DocumentDto;
+import br.com.drazevedo.dealrooms.application.dto.FolderDto;
 import br.com.drazevedo.dealrooms.domain.model.Document;
 import br.com.drazevedo.dealrooms.domain.model.Folder;
 import br.com.drazevedo.dealrooms.domain.model.User;
@@ -172,11 +173,33 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public DocumentDto addVieversToDocument(String documentId, List<String> viewersUsernames) {
-        return null;
+        Document document = documentRepository.findById(documentId).orElseThrow();
+        Folder parentFolder = folderRepository.findById(document.getParentFolderId()).orElseThrow();
+
+        List<String> invalidUserNames = viewersUsernames.stream()
+                .filter(viewer -> !parentFolder.getViewers().contains(viewer))
+                .toList();
+
+        List<String> validUserNames = new ArrayList<>(viewersUsernames);
+        validUserNames.removeAll(invalidUserNames);
+
+        List<User> newViewers = userRepository.findAllByUsernameIn(validUserNames);
+        document.getViewers().addAll(newViewers.stream().map(User::getUsername).toList());
+        documentRepository.save(document);
+
+        if(!invalidUserNames.isEmpty()) {
+            throw new RuntimeException("These users don't have permission to view this folder: " + invalidUserNames);
+        }
+        return DocumentDto.from(document);
     }
 
     @Override
     public DocumentDto deleteViewersFromDocument(String documentId, List<String> viewersUsernames) {
-        return null;
+        Document document = documentRepository.findById(documentId).orElseThrow();
+        List<User> newViewers = userRepository.findAllByUsernameIn(viewersUsernames);
+        newViewers.stream().map(User::getUsername).forEach(document.getViewers()::remove);
+        documentRepository.save(document);
+
+        return DocumentDto.from(document);
     }
 }
