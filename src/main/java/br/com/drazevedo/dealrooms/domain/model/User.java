@@ -2,8 +2,9 @@ package br.com.drazevedo.dealrooms.domain.model;
 
 
 import br.com.drazevedo.dealrooms.domain.model.enums.Role;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,6 +19,8 @@ import java.util.List;
 @Document
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User implements UserDetails {
 
     @MongoId

@@ -48,12 +48,11 @@ public class SecurityConfiguration {
     @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((authz) -> authz
+        http.authorizeHttpRequests(authz -> authz
                                 .requestMatchers("/api/**").authenticated()
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .requestMatchers("/v3/api-docs*/**").permitAll()
                 ).httpBasic();
-        http.csrf().disable();
         return http.build();
     }
 

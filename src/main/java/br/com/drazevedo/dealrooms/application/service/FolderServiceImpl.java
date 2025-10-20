@@ -7,7 +7,6 @@ import br.com.drazevedo.dealrooms.domain.model.User;
 import br.com.drazevedo.dealrooms.domain.repository.FolderRepository;
 import br.com.drazevedo.dealrooms.domain.repository.UserRepository;
 import br.com.drazevedo.dealrooms.interfaces.controllers.utils.LoggedUserUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

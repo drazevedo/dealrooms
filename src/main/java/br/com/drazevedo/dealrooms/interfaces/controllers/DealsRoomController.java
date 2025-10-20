@@ -7,7 +7,6 @@ import br.com.drazevedo.dealrooms.domain.model.enums.Role;
 import br.com.drazevedo.dealrooms.interfaces.controllers.utils.LoggedUserUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.RolesAllowed;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,17 +15,20 @@ import java.util.List;
 @SecurityRequirement(name = "basicAuth")
 public class DealsRoomController {
 
-    @Autowired
-    private FolderService service;
+    private final FolderService service;
 
-    @PostMapping("/api/dealrooms")
+    public DealsRoomController(FolderService service) {
+        this.service = service;
+    }
+
+    @PostMapping("/api/v1/dealrooms")
     @RolesAllowed("ADMIN")
     public FolderDto create(@RequestBody String roomName) {
 
         return FolderDto.from(service.createRoom(roomName));
     }
 
-    @GetMapping("/api/dealrooms")
+    @GetMapping("/api/v1/dealrooms")
     public List<FolderDto> findAllRooms() {
         User loggedUser = LoggedUserUtils.getLoggedUser();
 
@@ -41,21 +43,21 @@ public class DealsRoomController {
         }
     }
 
-    @PostMapping("/api/dealrooms/{roomId}/viewers")
+    @PostMapping("/api/v1/dealrooms/{roomId}/viewers")
     @RolesAllowed("ADMIN")
     public FolderDto addViewersToRoom(@PathVariable String roomId, @RequestBody List<String> viewersUsernames ) {
 
         return service.addVieversToRoom(roomId, viewersUsernames);
     }
 
-    @DeleteMapping("/api/dealrooms/{roomId}/viewers")
+    @DeleteMapping("/api/v1/dealrooms/{roomId}/viewers")
     @RolesAllowed("ADMIN")
     public FolderDto deleteViewersFromRoom(@PathVariable String roomId, @RequestBody List<String> viewersUsernames ) {
 
         return service.deleteViewersFromRoomOrFolder(roomId, viewersUsernames);
     }
 
-    @GetMapping("/api/dealrooms/{roomId}")
+    @GetMapping("/api/v1/dealrooms/{roomId}")
     public FolderDto viewRoomInfo(@PathVariable String roomId) {
         User loggedUser = LoggedUserUtils.getLoggedUser();
 

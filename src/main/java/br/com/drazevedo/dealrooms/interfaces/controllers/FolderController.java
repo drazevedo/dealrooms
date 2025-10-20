@@ -7,7 +7,6 @@ import br.com.drazevedo.dealrooms.domain.model.enums.Role;
 import br.com.drazevedo.dealrooms.interfaces.controllers.utils.LoggedUserUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.RolesAllowed;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +15,11 @@ import java.util.List;
 @SecurityRequirement(name = "basicAuth")
 public class FolderController {
 
-    @Autowired
-    private FolderService service;
+    private final FolderService service;
+
+    public FolderController(FolderService service) {
+        this.service = service;
+    }
 
     @PostMapping("/api/dealrooms/folder/{folderId}")
     @RolesAllowed("ADMIN")
