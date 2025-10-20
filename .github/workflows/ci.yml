@@ -36,6 +36,15 @@ jobs:
       - name: Run tests
         run: mvn test
 
+      # Sonar
+      #- name: Sonar
+      #  env:
+      #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #  run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+      #    -Dsonar.host.url=https://sonarcloud.io \
+      #    -Dsonar.organization=drazevedo \
+      #    -Dsonar.projectKey=drazevedo_dealrooms
+
       # Archive test reports
       - name: Archive test reports
         if: always()
