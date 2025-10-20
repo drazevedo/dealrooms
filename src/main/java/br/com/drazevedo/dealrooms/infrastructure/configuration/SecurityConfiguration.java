@@ -62,7 +62,7 @@ public class SecurityConfiguration {
                                 "/v3/api-docs.yaml"
                         ).permitAll()
                         .requestMatchers("/webjars/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults());
 
