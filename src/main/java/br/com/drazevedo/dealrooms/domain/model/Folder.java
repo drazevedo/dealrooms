@@ -25,7 +25,7 @@ public class Folder {
     private Set<Folder> folders = new LinkedHashSet<>();
     private Set<Document> documents = new LinkedHashSet<>();
 
-    private Folder parentFolder = null;
+    private String parentFolderId = null;
 
     private Set<String> viewers = new LinkedHashSet<>();
 

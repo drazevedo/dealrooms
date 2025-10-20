@@ -23,7 +23,7 @@ public class Document {
     private String checksum;
     private DocumentStatus status;
 
-    private Folder parentFolder;
+    private String parentFolderId;
 
     private Set<String> viewers = new LinkedHashSet<>();
 

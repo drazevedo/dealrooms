@@ -25,7 +25,7 @@ public class DocumentDto {
         return DocumentDto.builder()
                 .id(document.getId())
                 .name(document.getName())
-                .parentId(document.getParentFolder().getId())
+                .parentId(document.getParentFolderId())
                 .status(document.getStatus().name())
                 .checksum(document.getChecksum())
                 .path(document.getPath())

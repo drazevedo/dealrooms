@@ -16,7 +16,7 @@ public class DealRoom extends Folder {
     }
 
     // A DealRoom is nothing but a root folder
-    public void setParentFolder(Folder f){
+    public void setParentFolderId(String id){
         throw new UnsupportedOperationException("DealRooms can't have a parentFolder");
     }
 
