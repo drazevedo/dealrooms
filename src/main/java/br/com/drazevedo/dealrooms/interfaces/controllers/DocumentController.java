@@ -70,5 +70,4 @@ public class DocumentController {
 
         return service.reviewDocument(documentId);
     }
-
 }

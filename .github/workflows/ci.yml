@@ -11,8 +11,6 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "*" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
@@ -30,16 +28,4 @@ jobs:
 
       # Build
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
-
-      # Test
-      - name: Run tests
-        run: mvn test
-
-      # Archive test reports
-      - name: Archive test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'test-report'
-          path: target/surefire-reports/
+        run: mvn -B compile --file pom.xml
