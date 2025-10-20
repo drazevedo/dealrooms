@@ -2,6 +2,7 @@ package br.com.drazevedo.dealrooms.domain.model;
 
 
 import br.com.drazevedo.dealrooms.domain.model.enums.Role;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -60,4 +61,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

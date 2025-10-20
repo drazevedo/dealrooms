@@ -1,47 +1,69 @@
 package br.com.drazevedo.dealrooms.interfaces.controllers;
 
-import br.com.drazevedo.dealrooms.application.dto.DealRoomDto;
-import br.com.drazevedo.dealrooms.application.service.DealRoomService;
+import br.com.drazevedo.dealrooms.application.dto.FolderDto;
+import br.com.drazevedo.dealrooms.application.service.FolderService;
 import br.com.drazevedo.dealrooms.domain.model.User;
 import br.com.drazevedo.dealrooms.domain.model.enums.Role;
+import br.com.drazevedo.dealrooms.interfaces.controllers.utils.LoggedUserUtils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @SecurityRequirement(name = "basicAuth")
-@RolesAllowed("ADMIN")
 public class DealsRoomController {
 
     @Autowired
-    private DealRoomService service;
+    private FolderService service;
 
     @PostMapping("/api/dealrooms")
-    public DealRoomDto create(@RequestBody String roomName) {
+    @RolesAllowed("ADMIN")
+    public FolderDto create(@RequestBody String roomName) {
 
-        return DealRoomDto.from(service.createRoom(roomName));
+        return FolderDto.from(service.createRoom(roomName));
     }
 
     @GetMapping("/api/dealrooms")
-    public List<DealRoomDto> find() {
-        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        // TODO: currently locked to admins by roles allowed on the class
+    public List<FolderDto> findAllRooms() {
+        User loggedUser = LoggedUserUtils.getLoggedUser();
 
         if (Role.ADMIN.equals(loggedUser.getRole())) {
-            return service.findAll().stream()
-                    .map(DealRoomDto::from)
+            return service.findAllRootFolders().stream()
+                    .map(FolderDto::from)
                     .toList();
         }else{
-            return service.findByUser(loggedUser).stream()
-                    .map(DealRoomDto::from)
+            return service.findAllRootFoldersByUser(loggedUser).stream()
+                    .map(FolderDto::from)
                     .toList();
+        }
+    }
+
+    @PostMapping("/api/dealrooms/{roomId}/viewers")
+    @RolesAllowed("ADMIN")
+    public FolderDto addViewersToRoom(@PathVariable String roomId, @RequestBody List<String> viewersUsernames ) {
+
+        return service.addVieversToRoom(roomId, viewersUsernames);
+    }
+
+    @DeleteMapping("/api/dealrooms/{roomId}/viewers")
+    @RolesAllowed("ADMIN")
+    public FolderDto deleteViewersFromRoom(@PathVariable String roomId, @RequestBody List<String> viewersUsernames ) {
+
+        return service.deleteViewersFromRoomOrFolder(roomId, viewersUsernames);
+    }
+
+    @GetMapping("/api/dealrooms/{roomId}")
+    public FolderDto viewRoomInfo(@PathVariable String roomId) {
+        User loggedUser = LoggedUserUtils.getLoggedUser();
+
+        if (Role.ADMIN.equals(loggedUser.getRole())) {
+            return service.getInfoFromRoomOrFolder(roomId);
+        }else{
+            FolderDto folderDto = service.getInfoFromRoomOrFolder(roomId);
+            return folderDto.getViewers().contains(loggedUser.getUsername()) ? folderDto : null;
         }
     }
 

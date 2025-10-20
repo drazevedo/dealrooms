@@ -21,6 +21,8 @@ public class Document {
     private String checksum;
     private DocumentStatus status;
 
+    private Folder parentFolder;
+
     private List<User> viewers = new LinkedList<>();
 
 }
