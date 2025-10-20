@@ -23,6 +23,14 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/api/v1/users")
+    public List<UserDto> getUsers() {
+
+        return userService.findAll().stream()
+                .map(UserDto::from)
+                .toList();
+    }
+
     @PostMapping("/api/v1/users")
     public UserDto create(@RequestBody UserDto user) {
 
@@ -30,14 +38,6 @@ public class UserController {
         User savedUser = userService.save(userEntity);
 
         return UserDto.from(savedUser);
-    }
-
-    @GetMapping("/api/v1/users")
-    public List<UserDto> getUsers() {
-
-        return userService.findAll().stream()
-                .map(UserDto::from)
-                .toList();
     }
 
 }

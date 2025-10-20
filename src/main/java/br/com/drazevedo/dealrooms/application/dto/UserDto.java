@@ -3,12 +3,14 @@ package br.com.drazevedo.dealrooms.application.dto;
 import br.com.drazevedo.dealrooms.domain.model.User;
 import br.com.drazevedo.dealrooms.domain.model.enums.Role;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
+@Data
 public class UserDto {
 
     private String id;

@@ -21,28 +21,28 @@ public class FolderController {
         this.service = service;
     }
 
-    @PostMapping("/api/dealrooms/folder/{folderId}")
+    @PostMapping("/api/v1/dealrooms/folder/{folderId}")
     @RolesAllowed("ADMIN")
     public FolderDto createFolder(@PathVariable String folderId, @RequestBody String folderName) {
 
         return FolderDto.from(service.createFolderOn(folderId, folderName));
     }
 
-    @PostMapping("/api/dealrooms/folder/{folderId}/viewers")
+    @PostMapping("/api/v1/dealrooms/folder/{folderId}/viewers")
     @RolesAllowed("ADMIN")
     public FolderDto addViewersToFolder(@PathVariable String folderId, @RequestBody List<String> viewersUsernames ) {
 
         return service.addVieversToFolder(folderId, viewersUsernames);
     }
 
-    @DeleteMapping("/api/dealrooms/folder/{folderId}/viewers")
+    @DeleteMapping("/api/v1/dealrooms/folder/{folderId}/viewers")
     @RolesAllowed("ADMIN")
     public FolderDto deleteViewersFromFolder(@PathVariable String folderId, @RequestBody List<String> viewersUsernames ) {
 
         return service.deleteViewersFromRoomOrFolder(folderId, viewersUsernames);
     }
 
-    @GetMapping("/api/dealrooms/folder/{folderId}")
+    @GetMapping("/api/v1/dealrooms/folder/{folderId}")
     public FolderDto viewFolderInfo(@PathVariable String folderId) {
         User loggedUser = LoggedUserUtils.getLoggedUser();
 

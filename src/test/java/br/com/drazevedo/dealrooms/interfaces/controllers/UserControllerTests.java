@@ -1,8 +1,10 @@
 package br.com.drazevedo.dealrooms.interfaces.controllers;
 
+import br.com.drazevedo.dealrooms.application.dto.UserDto;
 import br.com.drazevedo.dealrooms.domain.model.User;
 import br.com.drazevedo.dealrooms.domain.model.enums.Role;
 import br.com.drazevedo.dealrooms.domain.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,6 +39,9 @@ class UserControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     private UserRepository userRepository;
 
     @BeforeAll
@@ -45,7 +51,7 @@ class UserControllerTests {
 
     @AfterAll
     void afterAll() {
-        userRepository.deleteAll();
+        //userRepository.deleteAll();
     }
 
     @Test
@@ -62,8 +68,47 @@ class UserControllerTests {
 
     @Test
     @WithUserDetails(value = "lawyer")
-    void testFindAllUsersFailWithLawyerRole() throws Exception {
+    void testFindAllUsersWithLawyerRoleFails() throws Exception {
         ResultActions result = mockMvc.perform(get("/api/v1/users"));
+        result
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails(value = "admin")
+    void testAddUserWithAdminRole() throws Exception {
+        ResultActions result = mockMvc
+                .perform(post("/api/v1/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(UserDto.builder()
+                                .email("email@email")
+                                .name("Name")
+                                .username("newUsername")
+                                .password("pass")
+                                .role(Role.BORROWER.name())
+                                .build())));
+        result
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/v1/users"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("newUsername")));
+    }
+
+    @Test
+    @WithUserDetails(value = "lawyer")
+    void testAddUsersWithLawyerRoleFails() throws Exception {
+        ResultActions result = mockMvc
+                .perform(post("/api/v1/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(UserDto.builder()
+                                .email("email@email")
+                                .name("Name")
+                                .username("newUsername")
+                                .password("pass")
+                                .role(Role.ADMIN.name())
+                                .build())));
         result
                 .andExpect(status().isForbidden());
     }
