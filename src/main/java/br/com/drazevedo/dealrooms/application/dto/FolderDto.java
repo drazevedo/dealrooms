@@ -1,10 +1,7 @@
 package br.com.drazevedo.dealrooms.application.dto;
 
-import br.com.drazevedo.dealrooms.domain.model.DealRoom;
 import br.com.drazevedo.dealrooms.domain.model.Document;
 import br.com.drazevedo.dealrooms.domain.model.Folder;
-import br.com.drazevedo.dealrooms.domain.model.User;
-import br.com.drazevedo.dealrooms.domain.model.enums.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,19 +11,23 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class DealRoomDto {
+public class FolderDto {
 
     private String id;
-    private String roomName;
+    private String name;
+    private String parentId;
     private List<String> foldersIds;
     private List<String> documentsIds;
+    private List<String> viewers;
 
-    public static DealRoomDto from(DealRoom room) {
-        return DealRoomDto.builder()
+    public static FolderDto from(Folder room) {
+        return FolderDto.builder()
                 .id(room.getId())
-                .roomName(room.getName())
+                .name(room.getName())
+                .parentId((room.getParentFolder() != null) ? room.getParentFolder().getId() : null)
                 .foldersIds(room.getFolders().stream().map(Folder::getId).toList())
                 .documentsIds(room.getDocuments().stream().map(Document::getId).toList())
+                .viewers(room.getViewers().stream().toList())
                 .build();
     }
 

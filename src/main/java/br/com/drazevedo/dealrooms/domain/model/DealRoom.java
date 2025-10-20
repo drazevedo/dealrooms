@@ -1,26 +1,23 @@
 package br.com.drazevedo.dealrooms.domain.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.LinkedList;
-import java.util.List;
 
 @org.springframework.data.mongodb.core.mapping.Document
 @Getter
 @Setter
-public class DealRoom {
+@NoArgsConstructor
+public class DealRoom extends Folder {
 
-    @MongoId
-    private String id;
+    public DealRoom(String id, String name, String... viewers) {
+        super(id, name, viewers);
+    }
 
-    @Indexed(unique=true)
-    private String name;
+    // A DealRoom is nothing but a root folder
+    public void setParentFolder(Folder f){
+        throw new UnsupportedOperationException("DealRooms can't have a parentFolder");
+    }
 
-    private List<Folder> folders = new LinkedList<>();
-    private List<Document> documents =  new LinkedList<>();
-
-    private List<User> viewers = new LinkedList<>();
 }

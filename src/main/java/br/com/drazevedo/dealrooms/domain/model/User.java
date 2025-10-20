@@ -2,7 +2,10 @@ package br.com.drazevedo.dealrooms.domain.model;
 
 
 import br.com.drazevedo.dealrooms.domain.model.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,11 +15,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Document
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User implements UserDetails {
 
     @MongoId
@@ -33,11 +40,10 @@ public class User implements UserDetails {
 
     private Role role;
 
-
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.name());
-
         return List.of(authority);
     }
 
@@ -60,4 +66,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
