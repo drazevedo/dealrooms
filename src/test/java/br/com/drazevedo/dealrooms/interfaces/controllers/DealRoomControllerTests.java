@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,7 +45,8 @@ class DealRoomControllerTests {
             new User(null, "Borrower 3", "email4@email", "borrower3", "pass", Role.BORROWER),
             new User(null, "Lawyer 1", "email5@email", "lawyer1", "pass", Role.LAWYER),
             new User(null, "Lawyer 2", "email6@email", "lawyer2", "pass", Role.LAWYER),
-            new User(null, "Lawyer 3", "email6@email", "lawyer3", "pass", Role.LAWYER));
+            new User(null, "Lawyer 3", "email6@email", "lawyer3", "pass", Role.LAWYER),
+            new User(null, "Lawyer 4", "email6@email", "lawyer4", "pass", Role.LAWYER));
 
     @Autowired
     private MockMvc mockMvc;
@@ -114,5 +115,70 @@ class DealRoomControllerTests {
                 .andExpect(content().string("[]"));
     }
 
+
+    @Test
+    @WithUserDetails(value = "admin")
+    void testAdminCreatesNewRooms() throws Exception {
+        ResultActions result = mockMvc.perform(post("/api/v1/dealrooms").content("New Room"));
+        result
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("New Room")));
+    }
+
+    @Test
+    @WithUserDetails(value = "lawyer1")
+    void testLawyerCreatesNewRoomsFails() throws Exception {
+        ResultActions result = mockMvc.perform(post("/api/v1/dealrooms").content("New Room 2"));
+        result
+                .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    @WithUserDetails(value = "admin")
+    void testAdminAddsUsersToRooms() throws Exception {
+        for (Folder room : ROOMS) {
+            ResultActions result = mockMvc.perform(
+                    post("/api/v1/dealrooms/" + room.getId() + "/viewers")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("[\"lawyer4\"]"));
+            result
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string(org.hamcrest.Matchers.containsString(room.getName())))
+                    .andExpect(content().string(org.hamcrest.Matchers.containsString("lawyer4")));
+        }
+    }
+
+    @Test
+    @WithUserDetails(value = "admin")
+    void testAdminRemovesUsersFromRooms() throws Exception {
+        for (Folder room : ROOMS) {
+            ResultActions result = mockMvc.perform(
+                    delete("/api/v1/dealrooms/" + room.getId() + "/viewers")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("[\"lawyer4\"]"));
+            result
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string(org.hamcrest.Matchers.containsString(room.getName())))
+                    .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("lawyer4"))));
+        }
+    }
+
+
+    @Test
+    @WithUserDetails(value = "admin")
+    void testAdminGetsInformationFromAllRooms() throws Exception {
+        for (Folder room : ROOMS) {
+            ResultActions result = mockMvc.perform(
+                    get("/api/v1/dealrooms/" + room.getId()));
+            result
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string(org.hamcrest.Matchers.containsString(room.getName())));
+        }
+    }
 
 }

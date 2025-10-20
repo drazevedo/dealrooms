@@ -21,13 +21,6 @@ public class DealsRoomController {
         this.service = service;
     }
 
-    @PostMapping("/api/v1/dealrooms")
-    @RolesAllowed("ADMIN")
-    public FolderDto create(@RequestBody String roomName) {
-
-        return FolderDto.from(service.createRoom(roomName));
-    }
-
     @GetMapping("/api/v1/dealrooms")
     public List<FolderDto> findAllRooms() {
         User loggedUser = LoggedUserUtils.getLoggedUser();
@@ -41,6 +34,13 @@ public class DealsRoomController {
                     .map(FolderDto::from)
                     .toList();
         }
+    }
+
+    @PostMapping("/api/v1/dealrooms")
+    @RolesAllowed("ADMIN")
+    public FolderDto create(@RequestBody String roomName) {
+
+        return FolderDto.from(service.createRoom(roomName));
     }
 
     @PostMapping("/api/v1/dealrooms/{roomId}/viewers")

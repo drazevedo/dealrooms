@@ -78,10 +78,10 @@ public class FolderServiceImpl implements FolderService {
 
     @Override
     public Folder createFolderOn(String folderId, String folderName) {
-        Folder room = folderRepository.findById(folderId).orElseThrow();
+        Folder parent = folderRepository.findById(folderId).orElseThrow();
 
         // subfolders at the same level should have different names
-        room.getFolders().stream()
+        parent.getFolders().stream()
                 .map(Folder::getName)
                 .filter(name -> name.equals(folderName))
                 .findFirst().ifPresent(folder -> {
@@ -89,7 +89,8 @@ public class FolderServiceImpl implements FolderService {
         });
 
         Folder folder = new Folder();
-        room.setName(folderName);
+        folder.setName(folderName);
+        folder.setParentFolder(parent);
 
         return folderRepository.save(folder);
     }

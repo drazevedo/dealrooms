@@ -21,6 +21,18 @@ public class FolderController {
         this.service = service;
     }
 
+    @GetMapping("/api/v1/dealrooms/folder/{folderId}")
+    public FolderDto viewFolderInfo(@PathVariable String folderId) {
+        User loggedUser = LoggedUserUtils.getLoggedUser();
+
+        if (Role.ADMIN.equals(loggedUser.getRole())) {
+            return service.getInfoFromRoomOrFolder(folderId);
+        }else{
+            FolderDto folderDto = service.getInfoFromRoomOrFolder(folderId);
+            return folderDto.getViewers().contains(loggedUser.getUsername()) ? folderDto : null;
+        }
+    }
+
     @PostMapping("/api/v1/dealrooms/folder/{folderId}")
     @RolesAllowed("ADMIN")
     public FolderDto createFolder(@PathVariable String folderId, @RequestBody String folderName) {
@@ -40,18 +52,6 @@ public class FolderController {
     public FolderDto deleteViewersFromFolder(@PathVariable String folderId, @RequestBody List<String> viewersUsernames ) {
 
         return service.deleteViewersFromRoomOrFolder(folderId, viewersUsernames);
-    }
-
-    @GetMapping("/api/v1/dealrooms/folder/{folderId}")
-    public FolderDto viewFolderInfo(@PathVariable String folderId) {
-        User loggedUser = LoggedUserUtils.getLoggedUser();
-
-        if (Role.ADMIN.equals(loggedUser.getRole())) {
-            return service.getInfoFromRoomOrFolder(folderId);
-        }else{
-            FolderDto folderDto = service.getInfoFromRoomOrFolder(folderId);
-            return folderDto.getViewers().contains(loggedUser.getUsername()) ? folderDto : null;
-        }
     }
 
 }
