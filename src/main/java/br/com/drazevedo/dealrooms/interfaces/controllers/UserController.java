@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @SecurityRequirement(name = "basicAuth")
-@RolesAllowed("ADMIN")
+//@RolesAllowed("ADMIN")
 public class UserController {
 
     private final UserService userService;

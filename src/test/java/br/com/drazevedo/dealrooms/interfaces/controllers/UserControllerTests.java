@@ -51,7 +51,7 @@ class UserControllerTests {
 
     @AfterAll
     void afterAll() {
-        //userRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
