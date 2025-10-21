@@ -1,6 +1,7 @@
 package br.com.drazevedo.dealrooms.interfaces.controllers;
 
 import br.com.drazevedo.dealrooms.domain.model.DealRoom;
+import br.com.drazevedo.dealrooms.domain.model.Document;
 import br.com.drazevedo.dealrooms.domain.model.Folder;
 import br.com.drazevedo.dealrooms.domain.model.User;
 import br.com.drazevedo.dealrooms.domain.model.enums.Role;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -146,6 +148,23 @@ class FolderControllerTests {
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().string(org.hamcrest.Matchers.containsString(folder.getName())))
                     .andExpect(content().string(org.hamcrest.Matchers.containsString("borrower3")));
+        }
+    }
+
+    @Test
+    @WithUserDetails(value = "admin")
+    void testAdminRemovesUsersFromFolders() throws Exception {
+
+        for (Folder folder : FOLDERS) {
+            ResultActions result = mockMvc.perform(
+                    delete("/api/v1/dealrooms/folder/" + folder.getId() + "/viewers")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("[\"borrower3\"]"));
+            result
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string(org.hamcrest.Matchers.containsString(folder.getName())))
+                    .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("borrower3"))));
         }
     }
 }

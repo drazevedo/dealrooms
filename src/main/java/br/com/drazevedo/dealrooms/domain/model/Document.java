@@ -1,18 +1,22 @@
 package br.com.drazevedo.dealrooms.domain.model;
 
 import br.com.drazevedo.dealrooms.domain.model.enums.DocumentStatus;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 @org.springframework.data.mongodb.core.mapping.Document
 @Getter
 @Setter
+@NoArgsConstructor
 public class Document {
     @MongoId
     private String id;
@@ -26,5 +30,14 @@ public class Document {
     private String parentFolderId;
 
     private Set<String> viewers = new LinkedHashSet<>();
+
+    public Document(String name, String path, String checksum, String parentFolderId, String... viewers){
+        this.name = name;
+        this.path = path;
+        this.checksum = checksum;
+        this.parentFolderId = parentFolderId;
+        this.status = DocumentStatus.UNCHECKED;
+        this.viewers.addAll(List.of(viewers));
+    }
 
 }

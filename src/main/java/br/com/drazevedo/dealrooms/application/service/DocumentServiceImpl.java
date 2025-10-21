@@ -130,13 +130,15 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private static void transferZipEntryToFile(File newFile, ZipInputStream zis) throws IOException {
-        FileOutputStream fos = new FileOutputStream(newFile);
+        try(FileOutputStream fos = new FileOutputStream(newFile)){
         int len;
         byte[] buffer = new byte[1024];
         while ((len = zis.read(buffer)) > 0) {
             fos.write(buffer, 0, len);
         }
         fos.close();
+        }
+        
     }
 
     private Document createAndSaveASingleDocument(String fileName, File folderPath, String parentFolderId, User loggedUser) throws IOException, NoSuchAlgorithmException {
