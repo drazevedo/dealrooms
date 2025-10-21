@@ -71,5 +71,9 @@ The project follows a layered and decoupled architecture, inspired by **Clean Ar
 
 ---
 
+## 📹 Loom Video explaining the API
+
+https://www.loom.com/share/1a223b264d8e464fb1eada4853bb06f9?sid=6acb8f6f-d922-4454-8b57-23f7d12d068d
+
 
 _This architecture ensures that the business logic remains at the core of the system, while frameworks and external dependencies stay at the periphery, making the project modular, testable, and maintainable._
