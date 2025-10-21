@@ -75,27 +75,23 @@ public class DocumentServiceImpl implements DocumentService {
         ZipEntry zipEntry = zis.getNextEntry();
         List<Document> documents = new ArrayList<>();
         while (zipEntry != null) {
-            if (!zipEntry.isDirectory()) {
-                if (!zipEntry.getName().startsWith("__MACOSX/")) {
-                    File newFile;
-                    String[] directories = zipEntry.getName().split(File.separator);
-                    File internalFolderPath = folderPath;
-                    String internalFolderId = parentFolder.getId();
-                    if(directories.length >1){
-                        String name = directories[directories.length - 1];
-                        directories = ArrayUtils.removeElement(directories, directories[directories.length-1]);
-                        internalFolderId = createFoldersForDirectories(directories, parentFolder);
-                        internalFolderPath = createPath(internalFolderId);
-                        newFile = new File(internalFolderPath, name);
-                    }else{
-                        newFile = new File(internalFolderPath, zipEntry.getName());
-                    }
-
-                    System.out.println(zipEntry.getName());
-                    transferZipEntryToFile(newFile, zis);
-                    Document document = createAndSaveASingleDocument(newFile.getName(), internalFolderPath, internalFolderId, loggedUser);
-                    documents.add(document);
+            if (!zipEntry.isDirectory() && !zipEntry.getName().startsWith("__MACOSX/")) {
+                File newFile;
+                String[] directories = zipEntry.getName().split(File.separator);
+                File internalFolderPath = folderPath;
+                String internalFolderId = parentFolder.getId();
+                if(directories.length >1){
+                    String name = directories[directories.length - 1];
+                    directories = ArrayUtils.removeElement(directories, directories[directories.length-1]);
+                    internalFolderId = createFoldersForDirectories(directories, parentFolder);
+                    internalFolderPath = createPath(internalFolderId);
+                    newFile = new File(internalFolderPath, name);
+                }else{
+                    newFile = new File(internalFolderPath, zipEntry.getName());
                 }
+                transferZipEntryToFile(newFile, zis);
+                Document document = createAndSaveASingleDocument(newFile.getName(), internalFolderPath, internalFolderId, loggedUser);
+                documents.add(document);
 
             }
             zipEntry = zis.getNextEntry();
@@ -124,19 +120,17 @@ public class DocumentServiceImpl implements DocumentService {
                 folderRepository.save(currentFolder);
             }
             currentFolder = nextFolder;
-            nextFolder = null;
         }
         return currentFolder.getId();
     }
 
     private static void transferZipEntryToFile(File newFile, ZipInputStream zis) throws IOException {
         try(FileOutputStream fos = new FileOutputStream(newFile)){
-        int len;
-        byte[] buffer = new byte[1024];
-        while ((len = zis.read(buffer)) > 0) {
-            fos.write(buffer, 0, len);
-        }
-        fos.close();
+            int len;
+            byte[] buffer = new byte[1024];
+            while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
         }
         
     }

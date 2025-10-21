@@ -1,14 +1,11 @@
 package br.com.drazevedo.dealrooms.domain.model;
 
 import br.com.drazevedo.dealrooms.domain.model.enums.DocumentStatus;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;

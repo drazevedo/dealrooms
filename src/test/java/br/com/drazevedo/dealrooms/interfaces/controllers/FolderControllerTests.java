@@ -1,7 +1,6 @@
 package br.com.drazevedo.dealrooms.interfaces.controllers;
 
 import br.com.drazevedo.dealrooms.domain.model.DealRoom;
-import br.com.drazevedo.dealrooms.domain.model.Document;
 import br.com.drazevedo.dealrooms.domain.model.Folder;
 import br.com.drazevedo.dealrooms.domain.model.User;
 import br.com.drazevedo.dealrooms.domain.model.enums.Role;

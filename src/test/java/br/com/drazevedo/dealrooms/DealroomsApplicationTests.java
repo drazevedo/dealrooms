@@ -12,12 +12,9 @@ import org.springframework.test.context.ActiveProfiles;
 @AutoConfigureDataMongo
 @Import(TestMongoConfig.class)
 class DealroomsApplicationTests {
-    @BeforeAll
-    static void checkProfile() {
-        System.out.println("🔍 Active profiles: " + System.getProperty("spring.profiles.active"));
-    }
 
     @Test
     void contextLoads() {
+        // Default test made by Spring.io
 	}
 }
