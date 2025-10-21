@@ -37,6 +37,7 @@ public class FolderServiceImpl implements FolderService {
     public DealRoom createRoom(String roomName) {
         User loggedUser = LoggedUserUtils.getLoggedUser();
 
+        // Dont allow creating a room with the same name 
         folderRepository.findAnyByParentFolderIdNullAndName(roomName).ifPresent(dealRoom -> {
             throw new RuntimeException("Room already exists");
         });
@@ -100,6 +101,7 @@ public class FolderServiceImpl implements FolderService {
         Folder folder = folderRepository.findById(folderId).orElseThrow();
         Folder parentFolder = folderRepository.findById(folder.getParentFolderId()).orElseThrow();
 
+        // It not only checks if the user is valid before adding, it also checks if they have access to the parent folder (that may be a room)
         List<String> invalidUserNames = viewersUsernames.stream()
                 .filter(viewer -> !parentFolder.getViewers().contains(viewer))
                 .toList();

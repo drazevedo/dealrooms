@@ -58,6 +58,7 @@ public class DocumentServiceImpl implements DocumentService {
         File folderPath = createPath(folderId);
         String fileName = Objects.requireNonNull(file.getOriginalFilename());
 
+        // if file is a zip, unzip and create the correct folders
         if (fileName.endsWith(".zip")){
             return handleMultipleFiles(file, parentFolder, folderPath, loggedUser);
         }
@@ -69,17 +70,25 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private List<DocumentDto> handleMultipleFiles(MultipartFile file, Folder parentFolder, File folderPath, User loggedUser) throws IOException, NoSuchAlgorithmException {
+        
+        // Save the zip file temporarily to be able to unzip it.
         Path tempFile = Files.createTempFile("", file.getOriginalFilename());
         file.transferTo(tempFile);
         ZipInputStream zis = new ZipInputStream(new FileInputStream(tempFile.toFile()));
         ZipEntry zipEntry = zis.getNextEntry();
         List<Document> documents = new ArrayList<>();
+        
+        // for each file inside the zip, save it
         while (zipEntry != null) {
+
+            // Skip directories (they are created based on the existing files) and dummy files
             if (!zipEntry.isDirectory() && !zipEntry.getName().startsWith("__MACOSX/")) {
                 File newFile;
                 String[] directories = zipEntry.getName().split(File.separator);
                 File internalFolderPath = folderPath;
                 String internalFolderId = parentFolder.getId();
+                
+                // If the file is inside any or multiple directories, create each one.
                 if(directories.length >1){
                     String name = directories[directories.length - 1];
                     directories = ArrayUtils.removeElement(directories, directories[directories.length-1]);
@@ -89,6 +98,8 @@ public class DocumentServiceImpl implements DocumentService {
                 }else{
                     newFile = new File(internalFolderPath, zipEntry.getName());
                 }
+
+                // save each file
                 transferZipEntryToFile(newFile, zis);
                 Document document = createAndSaveASingleDocument(newFile.getName(), internalFolderPath, internalFolderId, loggedUser);
                 documents.add(document);
@@ -102,6 +113,7 @@ public class DocumentServiceImpl implements DocumentService {
         return documents.stream().map(DocumentDto::from).toList();
     }
 
+    // This is the actual logic to create directories - from the root all the way down.
     private String createFoldersForDirectories(String[] directories, Folder parentFolder) {
         Folder currentFolder = parentFolder;
         Folder nextFolder = null;
@@ -124,6 +136,7 @@ public class DocumentServiceImpl implements DocumentService {
         return currentFolder.getId();
     }
 
+    // save (with resources) each file
     private static void transferZipEntryToFile(File newFile, ZipInputStream zis) throws IOException {
         try(FileOutputStream fos = new FileOutputStream(newFile)){
             int len;
@@ -135,6 +148,7 @@ public class DocumentServiceImpl implements DocumentService {
         
     }
 
+    // logic to handle a document that is not a Zip
     private Document createAndSaveASingleDocument(String fileName, File folderPath, String parentFolderId, User loggedUser) throws IOException, NoSuchAlgorithmException {
 
         MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
@@ -153,7 +167,7 @@ public class DocumentServiceImpl implements DocumentService {
         return document;
     }
 
-
+    // create directories if necessary
     private File createPath(String folderId) {
         File rootFolder = BASE_PATH.toFile();
         if (!rootFolder.exists()) {
@@ -171,6 +185,7 @@ public class DocumentServiceImpl implements DocumentService {
         Document document = documentRepository.findById(documentId).orElseThrow();
         Folder parentFolder = folderRepository.findById(document.getParentFolderId()).orElseThrow();
 
+        // Validates if (1) the user exists and (2) if they have access to the parent folder
         List<String> invalidUserNames = viewersUsernames.stream()
                 .filter(viewer -> !parentFolder.getViewers().contains(viewer))
                 .toList();
@@ -190,6 +205,8 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public DocumentDto deleteViewersFromDocument(String documentId, List<String> viewersUsernames) {
+        
+        //Removal does not care if the user is invalid or if it shouldnt have access: only removes
         Document document = documentRepository.findById(documentId).orElseThrow();
         List<User> newViewers = userRepository.findAllByUsernameIn(viewersUsernames);
         newViewers.stream().map(User::getUsername).forEach(document.getViewers()::remove);
@@ -200,6 +217,8 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public DocumentDto reviewDocument(String documentId) {
+
+        // Lawyers can only review documents they actually have access
         User loggedUser = LoggedUserUtils.getLoggedUser();
         Document document = documentRepository.findById(documentId).orElseThrow();
         

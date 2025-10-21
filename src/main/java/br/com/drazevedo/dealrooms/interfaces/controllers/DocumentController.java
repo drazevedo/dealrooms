@@ -32,6 +32,7 @@ public class DocumentController {
     public List<DocumentDto> viewDocumentsOnFolder(@PathVariable String folderId) {
         User loggedUser = LoggedUserUtils.getLoggedUser();
 
+        // Admins dont need access to view anything
         if (Role.ADMIN.equals(loggedUser.getRole())) {
             return service.getDocumentsOn(folderId);
         }else{

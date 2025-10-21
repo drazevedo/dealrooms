@@ -25,6 +25,7 @@ public class DealsRoomController {
     public List<FolderDto> findAllRooms() {
         User loggedUser = LoggedUserUtils.getLoggedUser();
 
+        // Admins dont need access to view anything
         if (Role.ADMIN.equals(loggedUser.getRole())) {
             return service.findAllRootFolders().stream()
                     .map(FolderDto::from)
