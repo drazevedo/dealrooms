@@ -60,7 +60,7 @@ class FolderControllerTests {
     void beforeAll() {
         userRepository.saveAll(USERS);
         folderRepository.save(ROOT_ROOM);
-        FOLDERS.forEach(folder -> folder.setParentFolder(ROOT_ROOM));
+        FOLDERS.forEach(folder -> folder.setParentFolderId(ROOT_ROOM.getId()));
         folderRepository.saveAll(FOLDERS);
     }
 
