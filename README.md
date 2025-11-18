@@ -125,7 +125,7 @@ You need to build an advanced Deal Room Management System with:
 ### Submission Guidelines
 
 - Code Repository
-  - Private GitHub/GitLab repository, shared with araposo@bridgemarketplace.com and ddias@bridgemarketplace.com.
+  - Private GitHub/GitLab repository.
   - Clear commit history showing progress
   - Branch strategy for features
 - Documentation
